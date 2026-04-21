@@ -1,0 +1,55 @@
+The site looks great! Now let's complete and polish everything. Do all of the following:
+
+## 1. TEST ALL ADMIN DASHBOARD TABS
+Click through every tab in the Admin dashboard and fix any errors:
+- Dashboard, Orders, Menu, Ingredients, Recipes, Reviews, Profit, Settings, Customers
+- Make sure all data loads from MongoDB (not localStorage)
+- Make sure adding/editing/deleting items works and persists after page refresh
+
+## 2. CUSTOMERS TAB
+The Customers tab should:
+- List all customers with name, phone, total orders, total spent
+- Search bar to filter by name or phone
+- Click a customer to see their full order history
+- "Add Customer" button with a form (name, phone, email, address, notes)
+- When a new order is placed, auto-create or link to existing customer by name
+
+## 3. INVOICE REDESIGN
+When clicking "Invoice PDF" on any order, open a new tab with this design:
+- Dark espresso (#3A2119) header with 🍪 orDough logo left, "one more?" tagline below it
+- Invoice number format: ORD-YYYYMMDD-XXXX (auto-generated), date, status badge on the right
+- Cream (#FAF6F1) body background
+- "Billed To" block: customer name, phone, address
+- Items table with columns: Item | Qty | Unit Price | Total
+  - Header row in Bisque (#EBCDB7)
+  - Alternating row shading
+- Totals right-aligned: Subtotal → Discount (green, only if >0) → Delivery → Grand Total (large, bold, Playfair Display)
+- UPI payment box: highlighted Chambray (#79A3C3) box showing the UPI ID with "Pay Now" label
+- Notes section with 📝 icon (only if order has notes)
+- Footer: "Thank you for choosing orDough 🍪" in italic Cormorant Garamond, phone + address below
+- A "Print / Save as PDF" button that calls window.print(), hidden in @media print
+
+## 4. PUBLIC WEBSITE SECTIONS
+Scroll down and fix any broken sections:
+- Featured Products / Menu section: pull items from MongoDB API GET /api/menu
+- Reviews section: pull from MongoDB API GET /api/reviews, auto-scroll marquee
+- Order CTA section: WhatsApp button linking to wa.me/919876543210
+- Footer: show bakery name, address, phone, UPI from settings
+
+## 5. SCROLL ANIMATIONS
+Add Framer Motion scroll-triggered animations to every section:
+- Each section fades up (opacity 0→1, y 40→0) as it enters the viewport
+- Use whileInView with viewport once:true, transition duration 0.7s ease
+
+## 6. MOBILE RESPONSIVENESS
+Make sure the full public site and admin dashboard are mobile-friendly:
+- Navbar collapses to hamburger on mobile
+- Admin sidebar collapses to bottom tab bar on screens < 768px
+- All grids stack to single column on mobile
+- Invoice is readable on mobile screen
+
+## 7. PUSH TO GITHUB
+After all fixes, run:
+git add .
+git commit -m "feat: complete orDough — MongoDB, invoice, animations, mobile"
+git push origin main --force

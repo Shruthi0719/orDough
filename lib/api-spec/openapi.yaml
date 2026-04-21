@@ -1,0 +1,1217 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: orDough Bakery API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: menu
+    description: Menu item operations
+  - name: orders
+    description: Order operations
+  - name: customers
+    description: Customer operations
+  - name: ingredients
+    description: Ingredient operations
+  - name: recipes
+    description: Recipe operations
+  - name: reviews
+    description: Review operations
+  - name: settings
+    description: Settings operations
+  - name: dashboard
+    description: Dashboard summary operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # --- MENU ---
+  /menu:
+    get:
+      operationId: listMenuItems
+      tags: [menu]
+      summary: List all menu items
+      responses:
+        "200":
+          description: List of menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuItem"
+    post:
+      operationId: createMenuItem
+      tags: [menu]
+      summary: Create a menu item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMenuItemBody"
+      responses:
+        "201":
+          description: Created menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+
+  /menu/{id}:
+    get:
+      operationId: getMenuItem
+      tags: [menu]
+      summary: Get a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateMenuItem
+      tags: [menu]
+      summary: Update a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMenuItemBody"
+      responses:
+        "200":
+          description: Updated menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteMenuItem
+      tags: [menu]
+      summary: Delete a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # --- CUSTOMERS ---
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create a customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerBody"
+      responses:
+        "201":
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCustomerBody"
+      responses:
+        "200":
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteCustomer
+      tags: [customers]
+      summary: Delete a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /customers/{id}/orders:
+    get:
+      operationId: getCustomerOrders
+      tags: [customers]
+      summary: Get orders for a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Customer's orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  # --- ORDERS ---
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, ready, delivered, cancelled]
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderBody"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderBody"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteOrder
+      tags: [orders]
+      summary: Delete an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # --- INGREDIENTS ---
+  /ingredients:
+    get:
+      operationId: listIngredients
+      tags: [ingredients]
+      summary: List all ingredients
+      responses:
+        "200":
+          description: List of ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ingredient"
+    post:
+      operationId: createIngredient
+      tags: [ingredients]
+      summary: Create an ingredient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIngredientBody"
+      responses:
+        "201":
+          description: Created ingredient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+
+  /ingredients/{id}:
+    patch:
+      operationId: updateIngredient
+      tags: [ingredients]
+      summary: Update an ingredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateIngredientBody"
+      responses:
+        "200":
+          description: Updated ingredient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteIngredient
+      tags: [ingredients]
+      summary: Delete an ingredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # --- RECIPES ---
+  /recipes:
+    get:
+      operationId: listRecipes
+      tags: [recipes]
+      summary: List all recipes
+      responses:
+        "200":
+          description: List of recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
+    post:
+      operationId: createRecipe
+      tags: [recipes]
+      summary: Create a recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRecipeBody"
+      responses:
+        "201":
+          description: Created recipe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+
+  /recipes/{id}:
+    patch:
+      operationId: updateRecipe
+      tags: [recipes]
+      summary: Update a recipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRecipeBody"
+      responses:
+        "200":
+          description: Updated recipe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteRecipe
+      tags: [recipes]
+      summary: Delete a recipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # --- REVIEWS ---
+  /reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List all reviews
+      responses:
+        "200":
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Create a review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReviewBody"
+      responses:
+        "201":
+          description: Created review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /reviews/{id}:
+    patch:
+      operationId: updateReview
+      tags: [reviews]
+      summary: Update a review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReviewBody"
+      responses:
+        "200":
+          description: Updated review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteReview
+      tags: [reviews]
+      summary: Delete a review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  # --- SETTINGS ---
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get bakery settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    patch:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update bakery settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+  # --- DASHBOARD ---
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/profit:
+    get:
+      operationId: getProfitReport
+      tags: [dashboard]
+      summary: Get profit report
+      responses:
+        "200":
+          description: Profit report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfitReport"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        emoji:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+        cost:
+          type: number
+        description:
+          type: ["string", "null"]
+        available:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - emoji
+        - category
+        - price
+        - cost
+        - available
+        - createdAt
+
+    CreateMenuItemBody:
+      type: object
+      properties:
+        name:
+          type: string
+        emoji:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+        cost:
+          type: number
+        description:
+          type: ["string", "null"]
+        available:
+          type: boolean
+      required:
+        - name
+        - emoji
+        - category
+        - price
+        - cost
+
+    UpdateMenuItemBody:
+      type: object
+      properties:
+        name:
+          type: string
+        emoji:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+        cost:
+          type: number
+        description:
+          type: ["string", "null"]
+        available:
+          type: boolean
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        totalOrders:
+          type: integer
+        totalSpent:
+          type: number
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - totalOrders
+        - totalSpent
+        - createdAt
+
+    CreateCustomerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - name
+
+    UpdateCustomerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    OrderItem:
+      type: object
+      properties:
+        menuItemId:
+          type: ["string", "null"]
+        name:
+          type: string
+        emoji:
+          type: string
+        qty:
+          type: integer
+        price:
+          type: number
+      required:
+        - name
+        - emoji
+        - qty
+        - price
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        customerId:
+          type: ["string", "null"]
+        customerName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        discount:
+          type: number
+        deliveryCharge:
+          type: number
+        status:
+          type: string
+          enum: [pending, ready, delivered, cancelled]
+        notes:
+          type: ["string", "null"]
+        invoiceNumber:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerName
+        - date
+        - items
+        - discount
+        - deliveryCharge
+        - status
+        - invoiceNumber
+        - createdAt
+
+    CreateOrderBody:
+      type: object
+      properties:
+        customerId:
+          type: ["string", "null"]
+        customerName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        discount:
+          type: number
+        deliveryCharge:
+          type: number
+        status:
+          type: string
+          enum: [pending, ready, delivered, cancelled]
+        notes:
+          type: ["string", "null"]
+      required:
+        - customerName
+        - items
+
+    UpdateOrderBody:
+      type: object
+      properties:
+        customerId:
+          type: ["string", "null"]
+        customerName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        discount:
+          type: number
+        deliveryCharge:
+          type: number
+        status:
+          type: string
+          enum: [pending, ready, delivered, cancelled]
+        notes:
+          type: ["string", "null"]
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        unit:
+          type: string
+        stock:
+          type: number
+        costPerUnit:
+          type: number
+        minStock:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - unit
+        - stock
+        - costPerUnit
+        - minStock
+        - createdAt
+
+    CreateIngredientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        stock:
+          type: number
+        costPerUnit:
+          type: number
+        minStock:
+          type: number
+      required:
+        - name
+        - unit
+        - stock
+        - costPerUnit
+        - minStock
+
+    UpdateIngredientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        stock:
+          type: number
+        costPerUnit:
+          type: number
+        minStock:
+          type: number
+
+    RecipeIngredient:
+      type: object
+      properties:
+        ingredientId:
+          type: string
+        ingredientName:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+      required:
+        - ingredientId
+        - ingredientName
+        - quantity
+        - unit
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+        menuItemId:
+          type: ["string", "null"]
+        menuItemName:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeIngredient"
+        instructions:
+          type: ["string", "null"]
+        servings:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - menuItemName
+        - ingredients
+        - servings
+        - createdAt
+
+    CreateRecipeBody:
+      type: object
+      properties:
+        menuItemId:
+          type: ["string", "null"]
+        menuItemName:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeIngredient"
+        instructions:
+          type: ["string", "null"]
+        servings:
+          type: integer
+      required:
+        - menuItemName
+        - ingredients
+        - servings
+
+    UpdateRecipeBody:
+      type: object
+      properties:
+        menuItemId:
+          type: ["string", "null"]
+        menuItemName:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeIngredient"
+        instructions:
+          type: ["string", "null"]
+        servings:
+          type: integer
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        customerName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        product:
+          type: ["string", "null"]
+        approved:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerName
+        - rating
+        - comment
+        - approved
+        - createdAt
+
+    CreateReviewBody:
+      type: object
+      properties:
+        customerName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        product:
+          type: ["string", "null"]
+        approved:
+          type: boolean
+      required:
+        - customerName
+        - rating
+        - comment
+
+    UpdateReviewBody:
+      type: object
+      properties:
+        customerName:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        product:
+          type: ["string", "null"]
+        approved:
+          type: boolean
+
+    Settings:
+      type: object
+      properties:
+        id:
+          type: string
+        bakeryName:
+          type: string
+        tagline:
+          type: string
+        phone:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        upiId:
+          type: ["string", "null"]
+        whatsapp:
+          type: ["string", "null"]
+        currency:
+          type: string
+        taxRate:
+          type: number
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - bakeryName
+        - tagline
+        - currency
+        - taxRate
+        - updatedAt
+
+    UpdateSettingsBody:
+      type: object
+      properties:
+        bakeryName:
+          type: string
+        tagline:
+          type: string
+        phone:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        upiId:
+          type: ["string", "null"]
+        whatsapp:
+          type: ["string", "null"]
+        currency:
+          type: string
+        taxRate:
+          type: number
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        todayRevenue:
+          type: number
+        totalRevenue:
+          type: number
+        totalCustomers:
+          type: integer
+        topSellingItem:
+          type: ["string", "null"]
+        lowStockCount:
+          type: integer
+        recentOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required:
+        - totalOrders
+        - pendingOrders
+        - todayRevenue
+        - totalRevenue
+        - totalCustomers
+        - lowStockCount
+        - recentOrders
+
+    ProfitReport:
+      type: object
+      properties:
+        totalRevenue:
+          type: number
+        totalCost:
+          type: number
+        grossProfit:
+          type: number
+        profitMargin:
+          type: number
+        byCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              revenue:
+                type: number
+              cost:
+                type: number
+              profit:
+                type: number
+            required:
+              - category
+              - revenue
+              - cost
+              - profit
+        byMonth:
+          type: array
+          items:
+            type: object
+            properties:
+              month:
+                type: string
+              revenue:
+                type: number
+              orders:
+                type: integer
+            required:
+              - month
+              - revenue
+              - orders
+      required:
+        - totalRevenue
+        - totalCost
+        - grossProfit
+        - profitMargin
+        - byCategory
+        - byMonth

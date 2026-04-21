@@ -1,0 +1,150 @@
+I have a React + Vite bakery website called "orDough" (tagline: "one more?"). 
+Rebrand ALL instances of "CrumbCo", "crumbco", "Bakery HQ" → "orDough" throughout 
+the entire codebase including src/App.jsx, all components, seed data, localStorage 
+keys, settings, and HTML title.
+
+Color palette to keep:
+- Espresso #3A2119, Chambray #79A3C3, Bisque #EBCDB7, Glacier #D2E2EC, Clay #957662, Cream #FAF6F1
+
+---
+
+## 1. VISUAL OVERHAUL — inspired by https://threejs.paris/
+
+Redesign the public-facing website (Homepage, Hero, Navbar, Footer, all sections) 
+to match the aesthetic of threejs.paris:
+
+- Full dark background (#0a0402 or deep espresso)
+- Hero section: immersive full-viewport Three.js canvas. Use floating 3D cookie/bread 
+  geometry — animated, slowly rotating, with warm point lighting (amber #D2691E, soft 
+  cream fill). Add a subtle particle system of flour dust floating upward.
+- Typography: large, cinematic, ultra-thin serif font for headings 
+  (use "Cormorant Garamond" 300 weight). Huge hero text like "baked with love" 
+  that reveals letter by letter on load.
+- Smooth scroll sections that fade/slide in using Framer Motion as user scrolls.
+- Cursor: custom glowing cursor dot that follows mouse with a warm amber trail.
+- Navbar: completely transparent on load, frosted glass blur on scroll. Logo uses 
+  the orDough cookie icon (🍪 in a circular badge).
+- Featured Products: horizontal scroll carousel with large product cards, 
+  dark background, price in Chambray blue, hover lifts card with glow.
+- Reviews section: dark cards with stars, slow auto-scroll marquee.
+- Footer: minimal, dark, with UPI and WhatsApp CTA button.
+- Overall vibe: luxury artisan bakery, cinematic, moody, warm — like threejs.paris 
+  but bakery-themed.
+
+---
+
+## 2. MONGODB INTEGRATION
+
+Replace all localStorage usage in the Admin Dashboard (src/App.jsx) with MongoDB 
+via a Node.js/Express backend.
+
+Backend setup (create server/ folder):
+- server/index.js — Express server on port 3001 with CORS enabled
+- server/db.js — Mongoose connection using MONGODB_URI from .env
+- server/routes/ — separate route files:
+  - customers.js  (GET all, POST new, PUT update, DELETE)
+  - orders.js     (GET all, POST new, PUT update status, DELETE)
+  - menu.js       (GET all, POST, PUT, DELETE)
+  - ingredients.js
+  - recipes.js
+  - reviews.js
+  - settings.js
+
+Mongoose schemas:
+
+Customer schema:
+{
+  name: String (required),
+  phone: String,
+  email: String,
+  address: String,
+  totalOrders: Number (default 0),
+  totalSpent: Number (default 0),
+  createdAt: Date (default now),
+  notes: String
+}
+
+Order schema:
+{
+  customerId: ObjectId ref Customer,
+  customerName: String,
+  date: Date,
+  items: [{ menuItemId: String, name: String, emoji: String, qty: Number, price: Number }],
+  discount: Number,
+  deliveryCharge: Number,
+  status: String enum [pending, ready, delivered, cancelled],
+  notes: String,
+  invoiceNumber: String (auto-generated: ORD-YYYYMMDD-XXXX),
+  createdAt: Date
+}
+
+In the frontend:
+- Replace all useLocalStorage hooks with React Query (useQuery / useMutation) 
+  hitting the Express API at http://localhost:3001/api/
+- Show loading spinners during fetch
+- Toast notifications on success/error (use react-hot-toast)
+- Add a new "Customers" tab in the admin sidebar with a customer list, 
+  search by name, view order history per customer
+
+---
+
+## 3. CUSTOMIZED INVOICE
+
+Replace the existing plain HTML invoice with a beautifully designed invoice that 
+opens in a new tab and is print/PDF ready.
+
+Invoice design spec:
+- Dark espresso header bar (#3A2119) with orDough logo (🍪 orDough) in white 
+  Cormorant Garamond font, left-aligned
+- Tagline "one more?" in Chambray blue below logo
+- Right side of header: Invoice number (ORD-YYYYMMDD-XXXX), date, status badge
+- Warm cream body (#FAF6F1)
+- "Billed To" section: customer name, phone if available, address if available
+- Items table: emoji + name | qty | unit price | line total
+  - Header row in Bisque #EBCDB7
+  - Alternating row shading (cream / white)
+  - Rounded table corners
+- Totals section right-aligned:
+  - Subtotal
+  - Discount (green, shown only if > 0)
+  - Delivery (shown only if > 0)
+  - Grand Total in large Playfair Display bold
+- Payment section: UPI ID in a highlighted box with a "Pay Now" label
+- Notes section: shown only if order has notes, with a 📝 icon
+- Footer: "Thank you for choosing orDough 🍪" centered, in italic Cormorant Garamond
+  + bakery phone and address in small clay-colored text
+- Print button that triggers window.print()
+- CSS @media print: hides the print button, keeps all colors
+
+---
+
+## 4. ENV & SCRIPTS
+
+Create a .env.example:
+MONGODB_URI=mongodb+srv://your-cluster/ordough
+PORT=3001
+VITE_API_URL=http://localhost:3001/api
+
+Update package.json scripts:
+"dev": "concurrently \"vite\" \"node server/index.js\"",
+"server": "node server/index.js",
+"client": "vite"
+
+Install these additional packages:
+npm install express mongoose cors dotenv concurrently react-query react-hot-toast
+
+---
+
+## 5. SEED SCRIPT
+
+Create server/seed.js that inserts the default menu items, ingredients, recipes, 
+and sample orders into MongoDB when run with: node server/seed.js
+
+Seed data should use the existing SEED object from App.jsx, adapted to Mongoose models.
+
+---
+
+Keep all existing admin dashboard functionality (orders, menu, recipes, ingredients, 
+reviews, profit, settings) — just wire them to MongoDB instead of localStorage.
+The public website (Homepage, Hero, etc.) is read-only and pulls menu + reviews 
+from the API.
