@@ -1,9 +1,28 @@
-import { useListRecipes } from "@workspace/api-client-react";
+import { useState } from "react";
+import { useListRecipes, useCreateRecipe, useListMenuItems, useListIngredients, getListRecipesQueryKey } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { BookOpen, Plus } from "lucide-react";
 
 export default function Recipes() {
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [menuItemId, setMenuItemId] = useState("");
+  const [batchSize, setBatchSize] = useState(1);
+  const [instructions, setInstructions] = useState("");
+  const [ingredients, setIngredients] = useState([{ ingredientId: "", quantity: 0 }]);
   const { data: recipes, isLoading } = useListRecipes();
+  const { data: menuItems } = useListMenuItems();
+  const { data: allIngredients } = useListIngredients();
+  const createRecipe = useCreateRecipe();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6">

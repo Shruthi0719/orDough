@@ -441,7 +441,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, ease: "easeOut" }}
-            className="min-w-0"
+            className="min-w-0 overflow-hidden"
           >
             <div className="mb-8">
               <h2
@@ -494,7 +494,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.12, ease: "easeOut" }}
-            className="border border-white/10 bg-white/[0.03] p-6 lg:sticky lg:top-28"
+            className="border border-white/10 bg-white/[0.03] p-6 lg:sticky lg:top-28 z-10"
           >
             <h3
               className="text-3xl mb-5 text-white"
@@ -570,7 +570,7 @@ export default function Home() {
                 animate={{ y: [0, -12, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <div className="text-8xl mb-6">🍪</div>
+                <div className="text-8xl mb-6">🧁</div>
                 <div
                   className="text-2xl text-[#EBCDB7] italic"
                   style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
@@ -591,7 +591,7 @@ export default function Home() {
               className="text-4xl md:text-5xl mb-8 text-white"
               style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 300 }}
             >
-              The dark side of dough.
+              Two sweet-tooths. One oven.
             </h2>
             <div className="space-y-6 text-white/70 text-lg leading-relaxed">
               <motion.p
@@ -600,7 +600,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
-                We started orDough with a simple premise: pastry shouldn't just be sweet. It should be an experience. Deeply roasted, perfectly caramelized, resting right on the edge of burnt.
+                We're [Your Name] and [Friend's Name] — two 21-year-old best friends who started this bakery because we genuinely couldn't stop eating our own bakes. What began as late-night experiments turned into something people actually wanted to order.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -608,8 +608,24 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                Every morning before the sun rises, our ovens hit 500 degrees. We use high-extraction flours, wild yeast cultures, and French butter. No shortcuts. No compromises.
+                Everything we make is home-baked in small batches. No commercial kitchen, no preservatives — just real ingredients, obsessive attention to texture, and the kind of care you can actually taste.
               </motion.p>
+              <div className="flex gap-4 mt-8">
+                <div className="flex items-center gap-3 border border-white/10 bg-white/5 px-4 py-3 rounded-sm">
+                  <div className="text-2xl">🧁</div>
+                  <div>
+                    <div className="text-[#EBCDB7] font-serif italic text-sm">[Your Name]</div>
+                    <div className="text-white/60 text-xs">Head Baker & Sugar Addict</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 border border-white/10 bg-white/5 px-4 py-3 rounded-sm">
+                  <div className="text-2xl">🍫</div>
+                  <div>
+                    <div className="text-[#EBCDB7] font-serif italic text-sm">[Friend's Name]</div>
+                    <div className="text-white/60 text-xs">Cookie Architect & Taste Tester</div>
+                  </div>
+                </div>
+              </div>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -618,7 +634,7 @@ export default function Home() {
                 className="text-xl text-[#EBCDB7] italic"
                 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
-                "Just one more..."
+                "We bake what we'd eat ourselves."
               </motion.p>
             </div>
           </motion.div>

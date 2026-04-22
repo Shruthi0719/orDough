@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { LockKeyhole } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +34,16 @@ export default function AdminLogin() {
   };
 
   return (
-    <main className="min-h-screen bg-[#D2E2EC] flex items-center justify-center px-6 text-[#3A2119]">
+    <main className="min-h-screen bg-[#D2E2EC] flex items-center justify-center px-6 text-[#3A2119] relative">
+      <div className="absolute top-6 left-6">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-sm text-[#957662] hover:text-[#3A2119] transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Back to Home
+        </Link>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm bg-[#EBCDB7] border border-[#957662]/30 shadow-2xl p-8"

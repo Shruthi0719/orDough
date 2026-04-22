@@ -80,6 +80,8 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "three": "^0.184.0"
   }
 }

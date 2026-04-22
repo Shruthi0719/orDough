@@ -40,18 +40,10 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       </main>
 
       <footer className="border-t border-white/10 bg-[#0a0402] pt-20 pb-10">
-        <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
           <div>
             <Link href="/" className="font-serif text-3xl mb-4 block">🍪 orDough</Link>
             <p className="text-[#79A3C3] font-serif italic text-xl">one more?</p>
-          </div>
-          <div>
-            <h4 className="text-white/50 uppercase tracking-widest text-xs mb-6">Visit Us</h4>
-            <address className="not-italic text-white/80 space-y-2 text-sm">
-              <p>123 Artisan Lane</p>
-              <p>Paris, France 75001</p>
-              <p className="pt-4">Wed - Sun: 8am - 4pm</p>
-            </address>
           </div>
           <div>
             <h4 className="text-white/50 uppercase tracking-widest text-xs mb-6">Contact</h4>

@@ -13,14 +13,14 @@ const SPRINKLE_COLORS = [
   "#957662",
 ] as const;
 
-function RotatingDoughnut() {
-  const doughnutRef = useRef<THREE.Group>(null);
+function RotatingCupcake() {
+  const cupcakeRef = useRef<THREE.Group>(null);
   const sprinkles = useMemo(
     () =>
       Array.from({ length: 68 }, (_, index) => {
         const angle = (index / 68) * Math.PI * 2 + (index % 5) * 0.07;
-        const tubeAngle = 0.3 + ((index * 29) % 132) * (Math.PI / 180);
-        const radius = 1.48 + 0.27 * Math.cos(tubeAngle);
+        const height = 0.4 + Math.random() * 0.9; // on cake body and frosting
+        const radius = height > 0.8 ? 0.5 - (height - 0.8) * 0.2 : 0.8; // narrower at top
         const length = index % 6 === 0 ? 0.16 : 0.23;
 
         return {
@@ -28,8 +28,8 @@ function RotatingDoughnut() {
           length,
           position: [
             Math.cos(angle) * radius,
+            height,
             Math.sin(angle) * radius,
-            0.31 + 0.21 * Math.sin(tubeAngle),
           ] as [number, number, number],
           rotation: [
             0.62 + (index % 4) * 0.08,
@@ -42,26 +42,41 @@ function RotatingDoughnut() {
   );
 
   useFrame((state) => {
-    if (doughnutRef.current) {
-      doughnutRef.current.rotation.x = state.clock.elapsedTime * 0.16;
-      doughnutRef.current.rotation.y = state.clock.elapsedTime * 0.28;
-      doughnutRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+    if (cupcakeRef.current) {
+      cupcakeRef.current.rotation.x = state.clock.elapsedTime * 0.16;
+      cupcakeRef.current.rotation.y = state.clock.elapsedTime * 0.28;
+      cupcakeRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
     }
   });
 
   return (
-    <group ref={doughnutRef} position={[0, 0, 0]}>
-      <mesh>
-        <torusGeometry args={[1.5, 0.43, 48, 140]} />
-        <meshStandardMaterial color="#957662" roughness={0.86} metalness={0.04} />
+    <group ref={cupcakeRef} position={[0, 0, 0]}>
+      {/* Base / wrapper */}
+      <mesh position={[0, -0.5, 0]}>
+        <cylinderGeometry args={[1, 0.8, 1, 32]} />
+        <meshStandardMaterial color="#957662" roughness={0.9} />
       </mesh>
-      <mesh position={[0, 0, 0.18]}>
-        <torusGeometry args={[1.5, 0.28, 36, 140]} />
-        <meshStandardMaterial color="#D2E2EC" roughness={0.42} metalness={0.02} />
+      {/* Cake body */}
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[0.8, 0.8, 0.8, 32]} />
+        <meshStandardMaterial color="#EBCDB7" roughness={0.85} />
       </mesh>
-      <mesh position={[0, 0, 0.21]} scale={[1.01, 1.01, 1]}>
-        <torusGeometry args={[1.5, 0.18, 24, 100]} />
-        <meshStandardMaterial color="#79A3C3" roughness={0.5} metalness={0.01} transparent opacity={0.72} />
+      {/* Frosting swirl */}
+      {Array.from({ length: 5 }, (_, i) => {
+        const radius = 0.9 - i * 0.08;
+        const y = 0.4 + i * 0.08;
+        const rotZ = i * 0.2;
+        return (
+          <mesh key={i} position={[0, y, 0]} rotation={[0, 0, rotZ]}>
+            <torusGeometry args={[radius, 0.05, 16, 32]} />
+            <meshStandardMaterial color="#D2E2EC" metalness={0.05} roughness={0.3} />
+          </mesh>
+        );
+      })}
+      {/* Frosting peak */}
+      <mesh position={[0, 0.8, 0]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color="#D2E2EC" metalness={0.05} roughness={0.3} />
       </mesh>
       {sprinkles.map((sprinkle, index) => (
         <mesh key={index} position={sprinkle.position} rotation={sprinkle.rotation}>
@@ -120,7 +135,7 @@ export default function ThreeHero() {
       <ambientLight intensity={0.48} color="#D2E2EC" />
       <pointLight position={[2.5, 2.5, 3]} color="#EBCDB7" intensity={2.25} />
       <pointLight position={[-2, -2, -2]} color="#79A3C3" intensity={1.05} />
-      <RotatingDoughnut />
+      <RotatingCupcake />
       <FlourParticles />
     </Canvas>
   );
