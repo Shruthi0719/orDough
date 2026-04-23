@@ -74,7 +74,7 @@ function BrownieStack() {
           <mesh castShadow receiveShadow scale={[b.scaleX, 1, b.scaleZ]}>
             <boxGeometry args={[W, H, D]} />
             <meshStandardMaterial
-              color="#1a0c06"
+              color="#6B3322"
               roughness={0.82}
               metalness={0.04}
             />
@@ -87,7 +87,7 @@ function BrownieStack() {
           >
             <boxGeometry args={[W * 0.98, 0.06, D * 0.98]} />
             <meshStandardMaterial
-              color="#2e1508"
+              color="#4a1f0e"
               roughness={0.92}
               metalness={0.0}
             />
@@ -100,21 +100,21 @@ function BrownieStack() {
           >
             <boxGeometry args={[W * 0.88, 0.04, D * 0.88]} />
             <meshStandardMaterial
-              color="#3d1a08"
-              roughness={0.18}
-              metalness={0.22}
+              color="#8B4513"
+              roughness={0.12}
+              metalness={0.35}
             />
           </mesh>
 
           {/* Crack line on front face */}
           <mesh position={[0, 0, D / 2 + 0.001]}>
             <boxGeometry args={[W * 0.85, 0.03, 0.01]} />
-            <meshStandardMaterial color="#0e0603" roughness={1.0} />
+            <meshStandardMaterial color="#3a1508" roughness={1.0} />
           </mesh>
           {/* Crack line on back face */}
           <mesh position={[0, 0, -(D / 2 + 0.001)]}>
             <boxGeometry args={[W * 0.85, 0.03, 0.01]} />
-            <meshStandardMaterial color="#0e0603" roughness={1.0} />
+            <meshStandardMaterial color="#3a1508" roughness={1.0} />
           </mesh>
         </group>
       ))}
@@ -124,7 +124,7 @@ function BrownieStack() {
         <mesh key={`drip-${i}`} position={[d.x, d.y, d.z]}>
           <sphereGeometry args={[d.s, 14, 10]} />
           <meshStandardMaterial
-            color="#3d1a08"
+            color="#7a3010"
             roughness={0.16}
             metalness={0.28}
           />
@@ -140,7 +140,7 @@ function BrownieStack() {
         >
           <circleGeometry args={[0.28 + i * 0.04, 24]} />
           <meshStandardMaterial
-            color="#4a2010"
+            color="#9B5523"
             roughness={0.12}
             metalness={0.30}
             transparent
@@ -152,15 +152,15 @@ function BrownieStack() {
       {/* ── Chocolate drizzle streaks across the top brownie ──────── */}
       <mesh position={[0.05, 0.60, 0.10]} rotation={[0, 0.3, 0]}>
         <boxGeometry args={[0.62, 0.03, 0.06]} />
-        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+        <meshStandardMaterial color="#9B5523" roughness={0.14} metalness={0.25} />
       </mesh>
       <mesh position={[-0.12, 0.60, -0.08]} rotation={[0, -0.15, 0]}>
         <boxGeometry args={[0.50, 0.03, 0.05]} />
-        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+        <meshStandardMaterial color="#9B5523" roughness={0.14} metalness={0.25} />
       </mesh>
       <mesh position={[0.20, 0.60, -0.20]} rotation={[0, 0.6, 0]}>
         <boxGeometry args={[0.35, 0.03, 0.04]} />
-        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+        <meshStandardMaterial color="#9B5523" roughness={0.14} metalness={0.25} />
       </mesh>
 
     </group>
@@ -217,18 +217,20 @@ export default function ThreeHero() {
         gl.domElement.addEventListener("webglcontextlost", () => setLost(true));
       }}
     >
-      {/* Warm ambient — lifts deep chocolate shadows */}
-      <ambientLight intensity={0.35} color="#EBCDB7" />
+      {/* Strong warm ambient so brownies are never fully dark */}
+      <ambientLight intensity={1.8} color="#EBCDB7" />
 
-      {/* Key light — upper front-right, creates the glossy highlight
-          on the top brownie's chocolate glaze */}
-      <pointLight position={[3, 5, 4]}   color="#EBCDB7" intensity={5.5} />
+      {/* Key light — upper front-right, bright warm spotlight on the stack */}
+      <pointLight position={[3, 5, 4]} color="#FFD4A0" intensity={18} />
 
-      {/* Fill light — left side, reveals the stack's depth */}
-      <pointLight position={[-4, 2, 2]}  color="#D2E2EC" intensity={1.4} />
+      {/* Fill light — left side, prevents the shadow side going black */}
+      <pointLight position={[-4, 3, 3]} color="#EBCDB7" intensity={8} />
 
-      {/* Rim light — behind, gives chocolate edges a warm caramel glow */}
-      <pointLight position={[0, -1, -4]} color="#957662" intensity={1.8} />
+      {/* Front fill — directly in front, lifts the facing surfaces */}
+      <pointLight position={[0, 1, 6]} color="#FFE8C8" intensity={6} />
+
+      {/* Rim light — warm caramel glow on edges from behind */}
+      <pointLight position={[0, -1, -4]} color="#957662" intensity={4} />
 
       <BrownieStack />
       <FlourParticles />
