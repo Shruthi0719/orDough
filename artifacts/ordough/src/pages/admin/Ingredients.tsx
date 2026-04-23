@@ -134,7 +134,7 @@ export default function Ingredients() {
           {ingredients?.map(ing => {
             const isLow = ing.stock <= ing.minStock;
             return (
-              <Card key={ing.id} className={isLow ? "border-red-200 bg-red-50/30" : ""}>
+              <Card key={ing.id} className={`admin-card bg-[#EBCDB7] border-[#957662]/30 ${isLow ? "border-red-200 bg-red-50/30" : ""}`}>
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>

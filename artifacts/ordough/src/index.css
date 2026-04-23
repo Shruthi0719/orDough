@@ -161,3 +161,27 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+[data-theme="dark"] .admin-card {
+  background-color: #1a0e09;
+  border-color: rgba(58, 33, 25, 0.6);
+  color: #EBCDB7;
+}
+
+[data-theme="dark"] .admin-card h1,
+[data-theme="dark"] .admin-card h2,
+[data-theme="dark"] .admin-card h3,
+[data-theme="dark"] .admin-card p,
+[data-theme="dark"] .admin-card span,
+[data-theme="dark"] .admin-card td,
+[data-theme="dark"] .admin-card th {
+  color: #EBCDB7;
+}
+
+[data-theme="dark"] thead {
+  background-color: #3A2119 !important;
+}
+
+[data-theme="dark"] tr:hover {
+  background-color: rgba(58, 33, 25, 0.4) !important;
+}

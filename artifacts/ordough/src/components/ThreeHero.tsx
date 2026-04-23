@@ -3,100 +3,183 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-const SPRINKLE_COLORS = [
-  "#79A3C3",
-  "#79A3C3",
-  "#79A3C3",
-  "#D2E2EC",
-  "#D2E2EC",
-  "#EBCDB7",
-  "#957662",
-] as const;
+// ─── Brownie stack layout ──────────────────────────────────────────────────
+// 6 brownies: 3 on the bottom row, 2 on the middle row, 1 on top.
+// Each has a slight random rotation and scale to look hand-stacked.
+const BROWNIE_LAYERS: Array<{
+  x: number; y: number; z: number;
+  rotY: number; scaleX: number; scaleZ: number;
+}> = [
+  // Bottom row — 3 brownies side by side
+  { x: -1.10, y: -1.30, z:  0.10, rotY:  0.08, scaleX: 1.00, scaleZ: 1.00 },
+  { x:  0.05, y: -1.30, z: -0.12, rotY: -0.05, scaleX: 1.02, scaleZ: 0.98 },
+  { x:  1.12, y: -1.30, z:  0.08, rotY:  0.10, scaleX: 0.98, scaleZ: 1.01 },
+  // Middle row — 2 brownies offset over the gaps below
+  { x: -0.54, y: -0.52, z:  0.05, rotY: -0.12, scaleX: 1.01, scaleZ: 0.99 },
+  { x:  0.60, y: -0.52, z: -0.08, rotY:  0.09, scaleX: 0.99, scaleZ: 1.02 },
+  // Top — 1 brownie centred
+  { x:  0.04, y:  0.28, z:  0.00, rotY:  0.15, scaleX: 1.00, scaleZ: 1.00 },
+];
 
-function RotatingCupcake() {
-  const cupcakeRef = useRef<THREE.Group>(null);
-  const sprinkles = useMemo(
-    () =>
-      Array.from({ length: 68 }, (_, index) => {
-        const angle = (index / 68) * Math.PI * 2 + (index % 5) * 0.07;
-        const height = 0.4 + Math.random() * 0.9; // on cake body and frosting
-        const radius = height > 0.8 ? 0.5 - (height - 0.8) * 0.2 : 0.8; // narrower at top
-        const length = index % 6 === 0 ? 0.16 : 0.23;
+// Chocolate drip blobs — squashed spheres on brownie edges
+const DRIPS: Array<{ x: number; y: number; z: number; s: number }> = [
+  { x:  0.55, y:  0.05, z:  0.42, s: 0.14 },
+  { x: -0.40, y:  0.02, z:  0.44, s: 0.11 },
+  { x:  0.15, y: -0.02, z: -0.44, s: 0.13 },
+  { x: -0.90, y: -0.82, z:  0.42, s: 0.10 },
+  { x:  0.22, y: -0.80, z:  0.43, s: 0.12 },
+  { x:  1.05, y: -0.80, z: -0.40, s: 0.09 },
+  { x: -0.55, y: -0.60, z: -0.40, s: 0.13 },
+  { x:  0.68, y: -0.58, z:  0.38, s: 0.10 },
+  { x: -1.10, y: -0.90, z:  0.00, s: 0.08 },
+  { x:  1.15, y: -0.88, z:  0.05, s: 0.09 },
+];
 
-        return {
-          color: SPRINKLE_COLORS[index % SPRINKLE_COLORS.length],
-          length,
-          position: [
-            Math.cos(angle) * radius,
-            height,
-            Math.sin(angle) * radius,
-          ] as [number, number, number],
-          rotation: [
-            0.62 + (index % 4) * 0.08,
-            0.18 + (index % 3) * 0.1,
-            angle + (index % 2 ? 0.55 : -0.35),
-          ] as [number, number, number],
-        };
-      }),
-    [],
-  );
+// Glossy fudge puddles on the top surface of each brownie
+const TOP_GLOSSES: Array<{ x: number; y: number; z: number }> = [
+  { x:  0.05, y:  0.43, z:  0.00 },
+  { x: -0.54, y: -0.35, z:  0.00 },
+  { x:  0.60, y: -0.35, z:  0.00 },
+];
+
+function BrownieStack() {
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (cupcakeRef.current) {
-      cupcakeRef.current.rotation.x = state.clock.elapsedTime * 0.16;
-      cupcakeRef.current.rotation.y = state.clock.elapsedTime * 0.28;
-      cupcakeRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+    if (groupRef.current) {
+      // Y-axis only — stack never tilts, always readable
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.28;
+      // Gentle vertical float
+      groupRef.current.position.y =
+        Math.sin(state.clock.elapsedTime * 0.55) * 0.12;
     }
   });
 
+  // Brownie slab dimensions
+  const W = 1.02; // width
+  const H = 0.55; // height (fudgy thickness)
+  const D = 0.88; // depth
+
   return (
-    <group ref={cupcakeRef} position={[0, 0, 0]}>
-      {/* Base / wrapper */}
-      <mesh position={[0, -0.5, 0]}>
-        <cylinderGeometry args={[1, 0.8, 1, 32]} />
-        <meshStandardMaterial color="#957662" roughness={0.9} />
-      </mesh>
-      {/* Cake body */}
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.8, 0.8, 0.8, 32]} />
-        <meshStandardMaterial color="#EBCDB7" roughness={0.85} />
-      </mesh>
-      {/* Frosting swirl */}
-      {Array.from({ length: 5 }, (_, i) => {
-        const radius = 0.9 - i * 0.08;
-        const y = 0.4 + i * 0.08;
-        const rotZ = i * 0.2;
-        return (
-          <mesh key={i} position={[0, y, 0]} rotation={[0, 0, rotZ]}>
-            <torusGeometry args={[radius, 0.05, 16, 32]} />
-            <meshStandardMaterial color="#D2E2EC" metalness={0.05} roughness={0.3} />
+    <group ref={groupRef} position={[0, 0.35, 0]}>
+
+      {/* ── Brownie slabs ─────────────────────────────────────────── */}
+      {BROWNIE_LAYERS.map((b, i) => (
+        <group
+          key={`brownie-${i}`}
+          position={[b.x, b.y, b.z]}
+          rotation={[0, b.rotY, 0]}
+        >
+          {/* Main body — deep espresso dark chocolate */}
+          <mesh castShadow receiveShadow scale={[b.scaleX, 1, b.scaleZ]}>
+            <boxGeometry args={[W, H, D]} />
+            <meshStandardMaterial
+              color="#1a0c06"
+              roughness={0.82}
+              metalness={0.04}
+            />
           </mesh>
-        );
-      })}
-      {/* Frosting peak */}
-      <mesh position={[0, 0.8, 0]}>
-        <sphereGeometry args={[0.1, 16, 16]} />
-        <meshStandardMaterial color="#D2E2EC" metalness={0.05} roughness={0.3} />
-      </mesh>
-      {sprinkles.map((sprinkle, index) => (
-        <mesh key={index} position={sprinkle.position} rotation={sprinkle.rotation}>
-          <boxGeometry args={[sprinkle.length, 0.06, 0.055]} />
-          <meshStandardMaterial color={sprinkle.color} roughness={0.45} emissive={sprinkle.color} emissiveIntensity={0.08} />
+
+          {/* Top crust — slightly lighter, cracked surface texture */}
+          <mesh
+            position={[0, H / 2 - 0.01, 0]}
+            scale={[b.scaleX * 0.98, 1, b.scaleZ * 0.98]}
+          >
+            <boxGeometry args={[W * 0.98, 0.06, D * 0.98]} />
+            <meshStandardMaterial
+              color="#2e1508"
+              roughness={0.92}
+              metalness={0.0}
+            />
+          </mesh>
+
+          {/* Glossy chocolate glaze pooled on top surface */}
+          <mesh
+            position={[0, H / 2 + 0.03, 0]}
+            scale={[b.scaleX * 0.88, 1, b.scaleZ * 0.88]}
+          >
+            <boxGeometry args={[W * 0.88, 0.04, D * 0.88]} />
+            <meshStandardMaterial
+              color="#3d1a08"
+              roughness={0.18}
+              metalness={0.22}
+            />
+          </mesh>
+
+          {/* Crack line on front face */}
+          <mesh position={[0, 0, D / 2 + 0.001]}>
+            <boxGeometry args={[W * 0.85, 0.03, 0.01]} />
+            <meshStandardMaterial color="#0e0603" roughness={1.0} />
+          </mesh>
+          {/* Crack line on back face */}
+          <mesh position={[0, 0, -(D / 2 + 0.001)]}>
+            <boxGeometry args={[W * 0.85, 0.03, 0.01]} />
+            <meshStandardMaterial color="#0e0603" roughness={1.0} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* ── Chocolate drip blobs on edges ─────────────────────────── */}
+      {DRIPS.map((d, i) => (
+        <mesh key={`drip-${i}`} position={[d.x, d.y, d.z]}>
+          <sphereGeometry args={[d.s, 14, 10]} />
+          <meshStandardMaterial
+            color="#3d1a08"
+            roughness={0.16}
+            metalness={0.28}
+          />
         </mesh>
       ))}
+
+      {/* ── Glossy fudge puddles on top surfaces ──────────────────── */}
+      {TOP_GLOSSES.map((g, i) => (
+        <mesh
+          key={`gloss-${i}`}
+          position={[g.x, g.y, g.z]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <circleGeometry args={[0.28 + i * 0.04, 24]} />
+          <meshStandardMaterial
+            color="#4a2010"
+            roughness={0.12}
+            metalness={0.30}
+            transparent
+            opacity={0.85}
+          />
+        </mesh>
+      ))}
+
+      {/* ── Chocolate drizzle streaks across the top brownie ──────── */}
+      <mesh position={[0.05, 0.60, 0.10]} rotation={[0, 0.3, 0]}>
+        <boxGeometry args={[0.62, 0.03, 0.06]} />
+        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+      </mesh>
+      <mesh position={[-0.12, 0.60, -0.08]} rotation={[0, -0.15, 0]}>
+        <boxGeometry args={[0.50, 0.03, 0.05]} />
+        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+      </mesh>
+      <mesh position={[0.20, 0.60, -0.20]} rotation={[0, 0.6, 0]}>
+        <boxGeometry args={[0.35, 0.03, 0.04]} />
+        <meshStandardMaterial color="#4a2010" roughness={0.14} metalness={0.25} />
+      </mesh>
+
     </group>
   );
 }
 
+// ─── Floating cocoa particles ──────────────────────────────────────────────
 function FlourParticles() {
   const pointsRef = useRef<THREE.Points>(null);
   const particleCount = 200;
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 5 - 2;
-  }
+  const positions = useMemo(() => {
+    const arr = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      arr[i * 3]     = (Math.random() - 0.5) * 10;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 5 - 2;
+    }
+    return arr;
+  }, []);
 
   useFrame((state) => {
     if (pointsRef.current) {
@@ -109,33 +192,45 @@ function FlourParticles() {
     <Points ref={pointsRef} positions={positions}>
       <PointMaterial
         transparent
-        opacity={0.4}
-        size={0.05}
-        color="#D2E2EC"
-        sizeAttenuation={true}
+        opacity={0.35}
+        size={0.045}
+        color="#EBCDB7"
+        sizeAttenuation
         depthWrite={false}
       />
     </Points>
   );
 }
 
+// ─── Canvas ────────────────────────────────────────────────────────────────
 export default function ThreeHero() {
   const [lost, setLost] = useState(false);
-
   if (lost) return null;
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 45 }}
+      // Slightly above and in front — sees the full stack from ~30° above,
+      // matching the perspective of the reference brownie photo
+      camera={{ position: [0, 2.2, 8], fov: 38 }}
       style={{ width: "100%", height: "100%" }}
       onCreated={({ gl }) => {
         gl.domElement.addEventListener("webglcontextlost", () => setLost(true));
       }}
     >
-      <ambientLight intensity={0.48} color="#D2E2EC" />
-      <pointLight position={[2.5, 2.5, 3]} color="#EBCDB7" intensity={2.25} />
-      <pointLight position={[-2, -2, -2]} color="#79A3C3" intensity={1.05} />
-      <RotatingCupcake />
+      {/* Warm ambient — lifts deep chocolate shadows */}
+      <ambientLight intensity={0.35} color="#EBCDB7" />
+
+      {/* Key light — upper front-right, creates the glossy highlight
+          on the top brownie's chocolate glaze */}
+      <pointLight position={[3, 5, 4]}   color="#EBCDB7" intensity={5.5} />
+
+      {/* Fill light — left side, reveals the stack's depth */}
+      <pointLight position={[-4, 2, 2]}  color="#D2E2EC" intensity={1.4} />
+
+      {/* Rim light — behind, gives chocolate edges a warm caramel glow */}
+      <pointLight position={[0, -1, -4]} color="#957662" intensity={1.8} />
+
+      <BrownieStack />
       <FlourParticles />
     </Canvas>
   );

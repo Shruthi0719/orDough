@@ -241,7 +241,7 @@ export default function Orders() {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <Card>
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">

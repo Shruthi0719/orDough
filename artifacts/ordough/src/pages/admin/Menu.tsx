@@ -113,7 +113,7 @@ export default function Menu() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {menuItems?.map(item => (
-            <Card key={item.id} className={!item.available ? "opacity-60" : ""}>
+            <Card key={item.id} className={`admin-card bg-[#EBCDB7] border-[#957662]/30 ${!item.available ? "opacity-60" : ""}`}>
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="text-3xl">{item.emoji}</div>

@@ -28,7 +28,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-[#3A2119]/70">Today's Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-[#3A2119]/50" />
@@ -40,7 +40,7 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-[#3A2119]/70">Pending Orders</CardTitle>
             <ShoppingBag className="h-4 w-4 text-[#3A2119]/50" />
@@ -52,7 +52,7 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-[#3A2119]/70">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-[#3A2119]/50" />
@@ -61,7 +61,7 @@ export default function Dashboard() {
             <div className="text-2xl font-bold text-[#3A2119]">{safeSummary.totalCustomers}</div>
           </CardContent>
         </Card>
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-[#3A2119]/70">Low Stock Items</CardTitle>
             <PackageOpen className="h-4 w-4 text-[#3A2119]/50" />
@@ -73,7 +73,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-[#3A2119] font-serif text-xl">Recent Orders</CardTitle>
@@ -105,7 +105,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-[#EBCDB7]/50 shadow-sm">
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30 shadow-sm">
           <CardHeader>
             <CardTitle className="text-[#3A2119] font-serif text-xl">Top Selling Item</CardTitle>
           </CardHeader>

@@ -57,7 +57,7 @@ export default function Settings() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card>
+        <Card className="admin-card bg-[#EBCDB7] border-[#957662]/30">
           <CardHeader>
             <CardTitle className="text-lg font-serif text-[#3A2119]">General Details</CardTitle>
           </CardHeader>
