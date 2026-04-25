@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, lazy, Suspense } from "react";
+﻿import { useRef, useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/layout/PublicLayout";
@@ -29,7 +29,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-dark-choco-cookie",
     name: "Dark Choco Cookie",
-    emoji: "🍪",
+    emoji: "ðŸª",
     category: "Cookies",
     price: 120,
     cost: 45,
@@ -40,7 +40,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-blueberry-cupcake",
     name: "Blueberry Cloud Cupcake",
-    emoji: "🧁",
+    emoji: "ðŸ§",
     category: "Cupcakes",
     price: 150,
     cost: 58,
@@ -51,7 +51,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-fudge-brownie",
     name: "Fudge Brownie",
-    emoji: "🍫",
+    emoji: "ðŸ«",
     category: "Brownies",
     price: 140,
     cost: 52,
@@ -62,7 +62,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-cinnamon-roll",
     name: "Cinnamon Swirl",
-    emoji: "🥐",
+    emoji: "ðŸ¥",
     category: "Pastry",
     price: 165,
     cost: 62,
@@ -73,7 +73,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-doughnut",
     name: "Chambray Doughnut",
-    emoji: "🍩",
+    emoji: "ðŸ©",
     category: "Doughnuts",
     price: 135,
     cost: 48,
@@ -84,7 +84,7 @@ const fallbackMenuItems: MenuItem[] = [
   {
     id: "sample-cookie-box",
     name: "Mini Cookie Box",
-    emoji: "🎁",
+    emoji: "ðŸŽ",
     category: "Boxes",
     price: 420,
     cost: 170,
@@ -290,7 +290,7 @@ export default function Home() {
         .menu-emoji { transition: transform 0.4s ease; display: inline-block; }
       `}</style>
 
-      {/* ── Hero ── */}
+      {/* â”€â”€ Hero â”€â”€ */}
       <section className="relative min-h-[92dvh] w-full flex items-center justify-center overflow-hidden">
         <HeroBackground />
 
@@ -367,7 +367,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Menu Section ── */}
+      {/* â”€â”€ Menu Section â”€â”€ */}
       <section id="menu" className="py-20 px-6 md:px-12 bg-[#0a0402]">
         <div className="container mx-auto">
           <motion.div
@@ -416,7 +416,7 @@ export default function Home() {
                     className="text-xl text-[#79A3C3]"
                     style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700 }}
                   >
-                    ₹{Number(item.price).toFixed(0)}
+                    â‚¹{Number(item.price).toFixed(0)}
                   </span>
                   <a
                     href={buildOrderUrl(item.name)}
@@ -433,7 +433,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Reviews ── */}
+      {/* â”€â”€ Reviews â”€â”€ */}
       <section id="reviews" className="py-20 px-6 md:px-12 overflow-hidden border-y border-white/5 bg-[#0a0402]">
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-10 items-start">
           <motion.div
@@ -550,7 +550,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── About Section ── */}
+      {/* â”€â”€ About Section â”€â”€ */}
       <section id="about" className="py-24 px-6 md:px-12 bg-[#0a0402]">
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -558,26 +558,30 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="relative aspect-square md:aspect-[4/3] w-full overflow-hidden"
+            className="relative w-full overflow-hidden rounded-sm"
           >
-            <div
-              className="absolute inset-0"
-              style={{ background: "linear-gradient(135deg, #3A2119 0%, #3A2119 40%, #0a0402 100%)" }}
+            {/* Founders photo */}
+            <img
+              src="/founders.png"
+              alt="The orDough founders"
+              className="w-full h-full object-cover object-top"
+              style={{ aspectRatio: "4/3" }}
             />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.div
-                className="text-center"
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            {/* Subtle dark vignette at the bottom so the "Since 2026" badge reads well */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-24"
+              style={{
+                background: "linear-gradient(to top, rgba(10,4,2,0.75) 0%, transparent 100%)"
+              }}
+            />
+            {/* Since 2026 badge — overlaid on the image bottom-left */}
+            <div className="absolute bottom-5 left-5">
+              <span
+                className="text-[#EBCDB7] italic text-lg"
+                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
-                <div className="text-8xl mb-6">🧁</div>
-                <div
-                  className="text-2xl text-[#EBCDB7] italic"
-                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-                >
-                  Since 2021
-                </div>
-              </motion.div>
+                Since 2026
+              </span>
             </div>
           </motion.div>
 
@@ -600,7 +604,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
-                We're [Your Name] and [Friend's Name] — two 21-year-old best friends who started this bakery because we genuinely couldn't stop eating our own bakes. What began as late-night experiments turned into something people actually wanted to order.
+                We're [Your Name] and [Friend's Name] â€” two 21-year-old best friends who started this bakery because we genuinely couldn't stop eating our own bakes. What began as late-night experiments turned into something people actually wanted to order.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -608,18 +612,18 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                Everything we make is home-baked in small batches. No commercial kitchen, no preservatives — just real ingredients, obsessive attention to texture, and the kind of care you can actually taste.
+                Everything we make is home-baked in small batches. No commercial kitchen, no preservatives â€” just real ingredients, obsessive attention to texture, and the kind of care you can actually taste.
               </motion.p>
               <div className="flex gap-4 mt-8">
                 <div className="flex items-center gap-3 border border-white/10 bg-white/5 px-4 py-3 rounded-sm">
-                  <div className="text-2xl">🧁</div>
+                  <div className="text-2xl">ðŸ§</div>
                   <div>
                     <div className="text-[#EBCDB7] font-serif italic text-sm">[Your Name]</div>
                     <div className="text-white/60 text-xs">Head Baker & Sugar Addict</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 border border-white/10 bg-white/5 px-4 py-3 rounded-sm">
-                  <div className="text-2xl">🍫</div>
+                  <div className="text-2xl">ðŸ«</div>
                   <div>
                     <div className="text-[#EBCDB7] font-serif italic text-sm">[Friend's Name]</div>
                     <div className="text-white/60 text-xs">Cookie Architect & Taste Tester</div>
@@ -643,3 +647,5 @@ export default function Home() {
     </PublicLayout>
   );
 }
+
+
